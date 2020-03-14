@@ -104,7 +104,9 @@ exports.delete_user = (req, res, next) => {
                         })
                     })
                     .catch(err => {
-                        error: err
+                        res.status(500).json({
+                            error: err
+                        })
                     })
             }
         })
@@ -121,6 +123,8 @@ exports.get_users = (req, res, next) => {
             })
         })
         .catch(err => {
-            error: err
+            res.status(500).json({
+                error: err
+            })
         })
 }
