@@ -5,7 +5,9 @@ const app = express();
 
 const userRoutes = require('./api/routers/user');
 
-mongoose.connect(`mongodb+srv://isagul:${process.env.MONGO_PW}@nytimes-2enjo.mongodb.net/test?retryWrites=true&w=majority`, {
+const url = process.env.MONGODB_URI || `mongodb+srv://isagul:${process.env.MONGO_PW}@nytimes-2enjo.mongodb.net/test?retryWrites=true&w=majority`
+
+mongoose.connect(url, {
     useNewUrlParser: true,
     useUnifiedTopology: true
 });
