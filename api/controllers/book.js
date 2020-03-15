@@ -11,7 +11,9 @@ exports.add_to_cart = (req, res, next) => {
       if (!user) {
         return res.status(200).json({
           status: false,
-          message: 'User not found!'
+          error: {
+            message: 'User not found!'
+          }
         })
       } else {
         const book = new Book({
@@ -69,7 +71,9 @@ exports.get_books = (req, res, next) => {
       if (!user) {
         return res.status(200).json({
           status: false,
-          message: 'User not found!'
+          error: {
+            message: 'User not found!'
+          }
         })
       } else {
         Book.find()

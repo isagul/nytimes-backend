@@ -11,7 +11,9 @@ exports.user_signup = (req, res, next) => {
             if (user) {
                 return res.status(200).json({
                     status: false,
-                    message: 'Mail address already exists!'
+                    error: {
+                        message: 'Mail address already exists!'
+                    }
                 })
             } else {
                 bcrypt.hash(req.body.password, 10, (err, hash) => {
@@ -102,7 +104,9 @@ exports.delete_user = (req, res, next) => {
             if (!user) {
                 res.status(200).json({
                     status: false,
-                    message: 'User not found!'
+                    error: {
+                        message: 'User not found!'
+                    }
                 })
             } else {
                 User.deleteOne({ _id: req.body.user_id })
