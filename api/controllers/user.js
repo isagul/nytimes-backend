@@ -9,13 +9,15 @@ exports.user_signup = (req, res, next) => {
         .exec()
         .then(user => {
             if (user) {
-                return res.status(404).json({
+                return res.status(200).json({
+                    status: false,
                     message: 'Mail address already exists!'
                 })
             } else {
                 bcrypt.hash(req.body.password, 10, (err, hash) => {
                     if (err) {
-                        return res.status(500).json({
+                        return res.status(200).json({
+                            status: false,
                             error: err
                         })
                     } else {
@@ -29,6 +31,7 @@ exports.user_signup = (req, res, next) => {
                             .save()
                             .then(result => {
                                 res.status(200).json({
+                                    status: true,
                                     message: 'User created successfully',
                                     userInfo: {
                                         _id: result._id,
@@ -37,7 +40,8 @@ exports.user_signup = (req, res, next) => {
                                 })
                             })
                             .catch(err => {
-                                res.status(500).json({
+                                res.status(200).json({
+                                    status: false,
                                     error: err
                                 })
                             })
@@ -53,6 +57,7 @@ exports.user_login = (req, res, next) => {
         .then(user => {
             if (!user) {
                 return res.status(200).json({
+                    status: false,
                     error: {
                         message: 'This mail address doesn\'t exist'
                     }
@@ -67,11 +72,13 @@ exports.user_login = (req, res, next) => {
                             expiresIn: '6h'
                         })
                         return res.status(200).json({
+                            status: true,
                             message: 'Auth successful',
                             token
                         })
                     } else {
                         return res.status(200).json({
+                            status: false,
                             error: {
                                 message: 'Auth failed'
                             }
@@ -81,7 +88,8 @@ exports.user_login = (req, res, next) => {
             }
         })
         .catch(err => {
-            res.status(500).json({
+            res.status(200).json({
+                status: false,
                 error: err
             })
         })
@@ -92,7 +100,8 @@ exports.delete_user = (req, res, next) => {
         .exec()
         .then(user => {
             if (!user) {
-                res.status(404).json({
+                res.status(200).json({
+                    status: false,
                     message: 'User not found!'
                 })
             } else {
@@ -100,11 +109,13 @@ exports.delete_user = (req, res, next) => {
                     .exec()
                     .then(result => {
                         res.status(200).json({
+                            status: true,
                             message: 'User deleted successfully'
                         })
                     })
                     .catch(err => {
-                        res.status(500).json({
+                        res.status(200).json({
+                            status: false,
                             error: err
                         })
                     })
@@ -114,7 +125,6 @@ exports.delete_user = (req, res, next) => {
 
 exports.get_users = (req, res, next) => {
     User.find()
-        .select('_id email password')
         .exec()
         .then(users => {
             res.status(200).json({

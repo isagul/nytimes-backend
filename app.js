@@ -3,19 +3,22 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const app = express();
 
+
 const userRoutes = require('./api/routers/user');
+const bookRoutes = require('./api/routers/book');
 
 const url = process.env.MONGODB_URI || `mongodb+srv://isagul:${process.env.MONGO_PW}@nytimes-2enjo.mongodb.net/test?retryWrites=true&w=majority`
 
 mongoose.connect(url, {
     useNewUrlParser: true,
-    useUnifiedTopology: true
+    useUnifiedTopology: true,
+    useFindAndModify: true
 });
 
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 
-app.use((req, res, next) => {
+app.all('*', (req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accecpt, Authorization');
     if (req.method === 'OPTIONS'){
@@ -26,6 +29,7 @@ app.use((req, res, next) => {
 });
 
 app.use('/user', userRoutes);
+app.use('/book', bookRoutes);
 
 app.use((req, res, next) => {
     const error = new Error('Not Found');
