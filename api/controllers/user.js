@@ -130,6 +130,29 @@ exports.delete_user = (req, res, next) => {
         })
 }
 
+exports.get_user_info = (req, res, next) => [
+    User.findOne({email: req.body.email})
+        .exec()
+        .then(user => {
+            if (!user) {
+                return res.status(200).json({
+                    status: false,
+                    error: {
+                        message: 'User not found!'
+                    }
+                })
+            }
+            res.status(200).json({
+                user
+            })
+        })
+        .catch(err => {
+            res.status(500).json({
+                error: err
+            })
+        })
+]
+
 exports.get_users = (req, res, next) => {
     User.find()
         .exec()
