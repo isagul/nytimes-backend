@@ -143,11 +143,13 @@ exports.get_user_info = (req, res, next) => [
                 })
             }
             res.status(200).json({
+                status: true,
                 user
             })
         })
         .catch(err => {
             res.status(500).json({
+                status: false,
                 error: err
             })
         })
@@ -158,12 +160,14 @@ exports.get_users = (req, res, next) => {
         .exec()
         .then(users => {
             res.status(200).json({
+                status: true,
                 count: users.length,
                 users
             })
         })
         .catch(err => {
             res.status(500).json({
+                status: false,
                 error: err
             })
         })
