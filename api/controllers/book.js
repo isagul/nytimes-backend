@@ -4,7 +4,7 @@ const Book = require('../models/book');
 const User = require('../models/user');
 
 exports.add_to_cart = (req, res, next) => {
-  User.findOne({_id: req.body.user_id})
+  User.findOne({email: req.body.email})
     .exec()
     .then(user => {
       console.log('user', user);
@@ -32,7 +32,7 @@ exports.add_to_cart = (req, res, next) => {
         });
 
         User.findOneAndUpdate(
-          { _id: req.body.user_id }, 
+          { email: req.body.email }, 
           { $push: { "basket": book } },
           {new: true}, 
           (err, doc) => {
@@ -94,13 +94,31 @@ exports.get_books = (req, res, next) => {
 }
 
 exports.delete_book = (req, res, next) => {
-  Book.deleteMany({primary_isbn10: req.body.primary_isbn10})
+  User.findOne({email: req.body.email})
     .exec()
-    .then(result => {
-      res.status(200).json({
-        status: true,
-        message: 'Book deleted successfully'
-      })
+    .then(user => {
+      if (!user) {
+        return res.status(200).json({
+          status: true,
+          message: 'User not found!'
+        })
+      }
+      User.findOneAndUpdate(
+        { email: req.body.email }, 
+        { "$pull" : { "basket" : { "primary_isbn10" :  req.body.primary_isbn10 } } } ,
+        (err, doc) => {
+          if (err) {
+              res.status(200).json({
+                status: false,
+                message: 'something went wrong!'
+              })
+          }        
+          res.status(200).json({
+            status: true,
+            message: 'Book deleted successfully'
+          })
+        }
+      );
     })
     .catch(err => {
       res.status(200).json({
