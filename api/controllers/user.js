@@ -172,3 +172,33 @@ exports.get_users = (req, res, next) => {
             })
         })
 }
+
+
+exports.update_basket = (req, res, next) => {
+    User.findOne({email: req.body.email})
+      .exec()
+      .then(user => {
+        if (!user) {
+          res.status(200).json({
+            status: false,
+            message: 'User not found!' 
+          })
+        }
+        User.findOneAndUpdate(
+          { email: req.body.email }, 
+          { "$set" : { "basket" : req.body.basket } } ,
+          (err, doc) => {
+            if (err) {
+                res.status(200).json({
+                  status: false,
+                  message: 'something went wrong!'
+                })
+            }        
+            res.status(200).json({
+              status: true,
+              message: 'Basket updated successfully'
+            })
+          }
+        );
+      })
+  }

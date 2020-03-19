@@ -12,7 +12,8 @@ const bookSchema = mongoose.Schema({
   book_image: String,
   buy_links: Array,
   book_price: Number,
-  total_book_price: Number
+  total_book_price: Number,
+  order_count: Number
 })
 
 module.exports = mongoose.model('Book', bookSchema);

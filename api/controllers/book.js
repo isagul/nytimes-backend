@@ -28,7 +28,8 @@ exports.add_to_cart = (req, res, next) => {
           book_image:  req.body.book_image,
           buy_links:  req.body.buy_links,
           book_price:  req.body.book_price,
-          total_book_price:  req.body.total_book_price
+          total_book_price:  req.body.total_book_price,
+          order_count: req.body.order_count
         });
 
         User.findOneAndUpdate(
@@ -37,7 +38,10 @@ exports.add_to_cart = (req, res, next) => {
           {new: true}, 
           (err, doc) => {
             if (err) {
-                console.log("Something wrong when updating data!");
+                res.status(200).json({
+                  status: true,
+                  message: "Book added into basket"
+                })
             }        
             console.log(doc);
           }
@@ -90,7 +94,6 @@ exports.get_books = (req, res, next) => {
           })
       }
     })
-    .catch()
 }
 
 exports.delete_book = (req, res, next) => {
