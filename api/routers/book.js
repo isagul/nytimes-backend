@@ -7,7 +7,7 @@ router.post('/add-to-cart', BookController.add_to_cart);
 router.post('/favourites/add', BookController.add_to_favourite);
 router.post('/favourites/delete', BookController.delete_favourite);
 router.get('/', BookController.get_books);
-router.get('/get-favourites', BookController.get_favourites);
+router.post('/get-favourites', BookController.get_favourites);
 router.delete('/delete', BookController.delete_book);
 
 module.exports = router;
