@@ -138,7 +138,7 @@ exports.delete_favourite = (req, res, next) => {
       } else {
         User.findOneAndUpdate(
           { email: req.body.email }, 
-          { "$unset" : { "favourites" : { "primary_isbn10" :  req.body.primary_isbn10 } } } ,
+          { "$pull" : { "favourites" : { "primary_isbn10" :  req.body.primary_isbn10 } } } ,
           {new: true}, 
           (err, doc) => {
             if (err) {
