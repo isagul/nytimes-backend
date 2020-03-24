@@ -13,7 +13,8 @@ const bookSchema = mongoose.Schema({
   buy_links: Array,
   book_price: Number,
   total_book_price: Number,
-  order_count: Number
+  order_count: Number,
+  is_favourite: {type: Boolean, default: false}
 })
 
 module.exports = mongoose.model('Book', bookSchema);

@@ -8,7 +8,8 @@ const userSchema = mongoose.Schema({
         required: true
     },
     password: {type: String, required: true},
-    basket: {type: Array}
+    basket: {type: Array},
+    favourites: {type: Array}
 })
 
 module.exports = mongoose.model('User', userSchema);

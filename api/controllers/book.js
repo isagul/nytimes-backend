@@ -29,7 +29,8 @@ exports.add_to_cart = (req, res, next) => {
           buy_links:  req.body.buy_links,
           book_price:  req.body.book_price,
           total_book_price:  req.body.total_book_price,
-          order_count: req.body.order_count
+          order_count: req.body.order_count,
+          is_favourite: req.body.is_favourite
         });
 
         User.findOneAndUpdate(
@@ -39,11 +40,14 @@ exports.add_to_cart = (req, res, next) => {
           (err, doc) => {
             if (err) {
                 res.status(200).json({
-                  status: true,
-                  message: "Book added into basket"
+                  status: false,
+                  message: "something went wrong"
                 })
             }        
-            console.log(doc);
+            res.status(200).json({
+              status: true,
+              message: "Book added into basket"
+            })
           }
         );
 
@@ -65,6 +69,116 @@ exports.add_to_cart = (req, res, next) => {
             })
           })
       }
+    })
+}
+
+exports.add_to_favourite = (req, res, next) => {
+  User.findOne({email: req.body.email})
+    .exec()
+    .then(user => {
+      console.log('user', user);
+      if (!user) {
+        return res.status(200).json({
+          status: false,
+          error: {
+            message: 'User not found!'
+          }
+        })
+      } else {
+        const book = new Book({
+          _id: mongoose.Types.ObjectId(),
+          primary_isbn10:  req.body.primary_isbn10,
+          primary_isbn13:  req.body.primary_isbn13,
+          publisher:  req.body.publisher,
+          description:  req.body.description,
+          title:  req.body.title,
+          author:  req.body.author,
+          contributor:  req.body.contributor,
+          book_image:  req.body.book_image,
+          buy_links:  req.body.buy_links,
+          book_price:  req.body.book_price,
+          total_book_price:  req.body.total_book_price,
+          order_count: req.body.order_count,
+          is_favourite: req.body.is_favourite
+        });
+
+        User.findOneAndUpdate(
+          { email: req.body.email }, 
+          { $push: { "favourites": book } },
+          {new: true}, 
+          (err, doc) => {
+            if (err) {
+                res.status(200).json({
+                  status: false,
+                  message: "something went wrong"
+                })
+            }        
+            res.status(200).json({
+              status: true,
+              message: "Book added into favourites"
+            })
+          }
+        );
+      }
+    })
+}
+
+exports.delete_favourite = (req, res, next) => {
+  User.findOne({email: req.body.email})
+    .exec()
+    .then(user => {
+      console.log('user', user);
+      if (!user) {
+        return res.status(200).json({
+          status: false,
+          error: {
+            message: 'User not found!'
+          }
+        })
+      } else {
+        User.findOneAndUpdate(
+          { email: req.body.email }, 
+          { "$unset" : { "favourites" : { "primary_isbn10" :  req.body.primary_isbn10 } } } ,
+          {new: true}, 
+          (err, doc) => {
+            if (err) {
+                res.status(200).json({
+                  status: false,
+                  message: "something went wrong"
+                })
+            }        
+            res.status(200).json({
+              status: true,
+              message: "Book deleted from favourites"
+            })
+          }
+        );
+      }
+    })
+}
+
+
+exports.get_favourites = (req, res, next) => {
+  User.findOne({email: req.body.email})
+    .exec()
+    .then(user => {
+      if (!user) {
+        return res.status(200).json({
+          status: false,
+          message: 'User not found'
+        })
+      }
+      return res.status(200).json({
+        status: true,
+        count: user.favourites.length,
+        favourites: user.favourites
+      })
+    })
+    .catch(err => {
+      res.status(200).json({
+        status: false,
+        error: err
+      })
     })
 }
 
